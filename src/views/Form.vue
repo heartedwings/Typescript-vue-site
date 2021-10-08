@@ -4,8 +4,11 @@
 
     <div>
       <div>
-        日付
-        <div><input name="date" type="date" v-model="data.date" /></div>
+        <span>日付</span>
+        <div>
+          <input name="date" type="date" v-model="data.date" />
+          <span class="must" />
+        </div>
       </div>
 
       <div>
@@ -166,6 +169,9 @@ export default {
         this.addAction(this.data);
         this.$router.push({ name: "Home" }, () => {});
       }
+
+      let day = this.data.date.value
+      console.log(day);
     },
 
 
@@ -180,13 +186,13 @@ export default {
 
           if ( m == "amountI" ) {
             console.log(this.data.amount);
-            let I = this.data.amount;
+            let I = this.data.amount * 1;
             console.log (I);
             this.data.incomeItems = I
             console.log(this.data.incomeItems);
 
           } else if ( m == "amountO" ) {
-            let O = this.data.amount;
+            let O = this.data.amount * 1;
             console.log (O);
             this.data.outgoItems = O
             console.log(this.data.outgoItems);
@@ -244,5 +250,22 @@ export default {
 <style>
 .Validation{
   color: rgb(222, 68, 68);
+}
+
+.must::after {
+    content: "必須";
+    background-color: #f0564e;
+    color: #fff;
+    font-size: 12px;
+    font-weight: bold;
+    min-width: 10px;
+    padding: 3px 7px;
+    margin: 0px 5px;
+    line-height: 1;
+    vertical-align: middle;
+    white-space: nowrap;
+    text-align: center;
+    border-radius: 10px;
+    display: inline-block;
 }
 </style>

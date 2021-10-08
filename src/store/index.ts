@@ -33,8 +33,9 @@ export default new Vuex.Store({
   state: {
     login_user: null as firebase.User | null,
     datas: [] as itemData[],
-    username: '',
-    loggedIn: false,
+    username: '' as string,
+    loggedIn: false as boolean, //ローカル
+
     //  /** 家計簿データ */
     // Data: {},
     // /** ローディング状態 */
@@ -68,6 +69,11 @@ export default new Vuex.Store({
     deleteAction (state, i) {
       console.log(i);
       state.datas.splice( i, 1 )
+    },
+
+    addDatas (state, {id, data}) {
+      data.id = id;
+      state.datas = data
     },
 
 
@@ -138,6 +144,31 @@ export default new Vuex.Store({
       commit ("deleteAction", item)
     },
 
+    setDatas ( { getters, commit }) {
+      console.log('動いてるよ！！');
+      firebase
+      .firestore ()
+      .collection ('user/${getters.uid}/carts')
+      .add ( {
+        date: "",
+        title: "",
+        category: "",
+        incomeItems: "",
+        outgoItems: "",
+        memo:"",
+      }).then ( doc => {
+        commit ( "addDatas", { id: doc.id, data: {
+        date: "",
+        title: "",
+        category: "",
+        incomeItems: "",
+        outgoItems: "",
+        memo:"",
+        }
+      })
+      })
+    }
+
 
     // async fetchData ({ commit }, { yearMonth }) {
     //   const type = 'fetch'
@@ -155,11 +186,15 @@ export default new Vuex.Store({
   },
   
   getters: {
+    uid: state => state.login_user ? state.login_user.uid : null, 
     userName: state => state.login_user ? state.login_user.displayName : '',
     photoURL: state=>state.login_user? state.login_user.photoURL : '',
+
+    getDatas: state => state.datas,
+    
   },
 
-
+  //ローカル保存
   plugins: [createPersistedState(
     { // ストレージのキーを指定。デフォルトではvuex
       key:
